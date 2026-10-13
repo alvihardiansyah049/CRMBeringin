@@ -91,7 +91,7 @@
 
   .empty { text-align: center; color: var(--muted); padding: 70px 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
 
-  /* ---------- Panel ringkasan ---------- */
+  /* ---------- Panel  ---------- */
   .assist { background: var(--side); border-left: 1px solid var(--line); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; }
   .ahead { padding: 16px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
   .ahead .ic { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #5b6ee8, #4ec7a8); }
@@ -223,7 +223,7 @@
   </main>
 
   <aside class="assist">
-    <div class="ahead"><div class="ic"></div><div><b>Ringkasan otomatis</b><small>Dihitung dari datamu, bukan AI</small></div></div>
+    <div class="ahead"><div class="ic"></div><div><b> otomatis</b><small>Dihitung dari data</small></div></div>
     <div class="chat" id="chat"></div>
     <div class="chips" id="chips">
       <button>Masalah terbanyak</button><button>Belum selesai</button><button>Per penanggung jawab</button><button>Kualitas data</button><button>Hari puncak</button>
@@ -457,9 +457,9 @@
     if (!g.length) { const tr = el('tr'), td = el('td', null, 'Tidak ada baris untuk saringan ini.'); td.colSpan = 5; tr.appendChild(td); tb.appendChild(tr); }
   }
 
-  // ---------- Panel ringkasan ----------
+  // ---------- Panel  ----------
   function addMsg(who, o) {
-    const w = el('div', 'msgwrap ' + who); w.appendChild(el('div', 'who', who === 'me' ? 'Kamu' : 'Ringkasan otomatis'));
+    const w = el('div', 'msgwrap ' + who); w.appendChild(el('div', 'who', who === 'me' ? 'Kamu' : ' otomatis'));
     const b = el('div', 'bubble');
     if (o.text) b.appendChild(el('p', null, o.text));
     if (o.list) { const ul = el('ul'); o.list.forEach(t => ul.appendChild(el('li', null, t))); b.appendChild(ul); }
@@ -500,7 +500,7 @@
     if (/masalah|keluhan|sering|banyak|issue|terbanyak/.test(q)) {
       return { text: 'Masalah terbanyak:', list: group(C, c => c.desc).slice(0, 5).map(x => x.name + ': ' + x.n + ' (' + pct(x.n, n) + '%)') };
     }
-    return { text: 'Saya belum paham pertanyaan itu. Ini ringkasan yang dihitung dari datamu, bukan AI, jadi jawabannya terbatas. Coba tanya soal: masalah terbanyak, belum selesai, penanggung jawab, menunggu respon, hari puncak, atau kualitas data.' };
+    return { text: 'Saya belum paham pertanyaan itu. Ini  yang dihitung dari datamu, bukan AI, jadi jawabannya terbatas. Coba tanya soal: masalah terbanyak, belum selesai, penanggung jawab, menunggu respon, hari puncak, atau kualitas data.' };
   }
   function greet() {
     $('chat').innerHTML = '';
