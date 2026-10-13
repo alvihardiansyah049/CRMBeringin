@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Dashboard Komplain dan Penjualan</title>
+<title>Dashboard Komplain</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
   :root {
     color-scheme: dark;
-    --bg: #0d1220; --side: #0a0f1c; --panel: #111829; --panel2: #151d31; --line: #1f2840;
+    --bg: #0d1220; --side: #0a0f1c; --panel: #111829; --line: #1f2840;
     --ink: #e8ecf5; --muted: #8a94ad; --accent: #8fd95b; --accent-ink: #0d1a08;
     --blue: #6272e8; --orange: #f0993f; --pink: #e0508a; --red: #ef5b5b; --green: #5fd38a;
     box-sizing: border-box;
@@ -17,20 +17,17 @@
   }
   * { box-sizing: border-box; }
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-         font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
   p { margin: 0; }
   button, select, input { font: inherit; color: inherit; }
   button { cursor: pointer; }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-  .app { display: grid; grid-template-columns: 250px minmax(0, 1fr) 370px; min-height: 100vh; }
+  .app { display: grid; grid-template-columns: 260px minmax(0, 1fr) 360px; min-height: 100vh; }
 
-  /* ---------- Sidebar ---------- */
   .side { background: var(--side); border-right: 1px solid var(--line); padding: 20px 16px; display: flex; flex-direction: column; gap: 18px; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; }
-  .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink);
-          display: grid; place-items: center; font-weight: 700; font-size: 12px; }
+  .logo { width: 34px; height: 34px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; font-size: 12px; }
   .side h3 { margin: 0 0 8px; font-size: 12px; font-weight: 500; color: var(--muted); }
   .drop { display: block; position: relative; border: 1px dashed #2b3656; border-radius: 10px; padding: 12px; background: var(--panel); cursor: pointer; margin-bottom: 10px; }
   .drop:hover, .drop:focus-within { border-color: var(--accent); }
@@ -38,20 +35,22 @@
   .drop small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
   .drop .fn { margin-top: 6px; color: var(--accent); font-size: 12px; font-weight: 500; word-break: break-all; }
   .drop input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .chk { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
   .field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
   .field select, .field input { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 7px 9px; width: 100%; }
-  .mapbox { display: none; }
-  .mapbox.show { display: block; }
+  details.mapbox { display: none; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--panel); }
+  details.mapbox.show { display: block; }
+  details.mapbox summary { cursor: pointer; font-size: 13px; font-weight: 500; }
+  details.mapbox .field { margin: 10px 0 0; }
   .tip { font-size: 12px; color: var(--muted); line-height: 1.55; }
 
-  /* ---------- Main ---------- */
   .main { padding: 18px 22px 40px; min-width: 0; }
   .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
   .top h1 { font-size: 18px; margin: 0; font-weight: 600; display: flex; align-items: center; gap: 10px; }
   .badge { font-size: 11px; font-weight: 500; padding: 2px 9px; border-radius: 999px; border: 1px solid #2c4a2b; background: #14261a; color: var(--accent); }
   .badge.off { border-color: var(--line); background: var(--panel); color: var(--muted); }
   .tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
+  .seg { display: inline-flex; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 2px; }
   .seg button { background: none; border: 0; padding: 5px 11px; border-radius: 6px; color: var(--muted); font-size: 12px; font-weight: 500; }
   .seg button.on { background: #1c2b22; color: var(--accent); }
   .btn { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 500; }
@@ -60,18 +59,19 @@
   .msg { display: none; margin-bottom: 14px; padding: 10px 14px; border-radius: 8px; background: #2a1519; border: 1px solid #5a2630; color: #ffb3bd; }
   .msg.show { display: block; }
 
-  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 14px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 14px; margin-bottom: 14px; }
   .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
   .kpi .l { font-size: 11px; color: var(--muted); font-weight: 500; }
-  .kpi .v { font-size: 30px; font-weight: 700; line-height: 1.15; margin: 4px 0; font-variant-numeric: tabular-nums; }
+  .kpi .v { font-size: 28px; font-weight: 700; line-height: 1.15; margin: 4px 0; font-variant-numeric: tabular-nums; }
   .kpi .s { font-size: 12px; color: var(--muted); }
   .kpi .s.good { color: var(--accent); } .kpi .s.bad { color: var(--orange); }
 
-  .row2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; margin-bottom: 14px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+  .row2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; margin-bottom: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; margin-bottom: 0; }
+  .full { margin-bottom: 14px; }
   .card h2 { font-size: 14px; margin: 0; font-weight: 600; }
   .card .hd { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .chart { position: relative; height: 230px; }
+  .chart { position: relative; height: 240px; }
   .donut { display: flex; align-items: center; gap: 18px; }
   .donut .cv { position: relative; width: 170px; height: 170px; flex: none; }
   .legend { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -80,18 +80,21 @@
   .legend span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .legend b { font-variant-numeric: tabular-nums; }
 
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; font-size: 11px; font-weight: 500; color: var(--muted); padding: 0 8px 8px 0; border-bottom: 1px solid var(--line); }
-  td { padding: 11px 8px 11px 0; border-bottom: 1px solid var(--line); vertical-align: middle; }
-  tr:last-child td { border-bottom: 0; }
-  td.n, th.n { text-align: right; padding-right: 14px; font-variant-numeric: tabular-nums; }
-  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
-  .pill.bad { background: #3a1a1f; color: var(--red); } .pill.warn { background: #3a2a14; color: var(--orange); } .pill.ok { background: #14301f; color: var(--green); }
   .tablewrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; font-weight: 500; color: var(--muted); padding: 0 10px 8px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 10px 10px 10px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+  table.dense td { font-size: 12px; padding: 8px 10px 8px 0; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .pill.bad { background: #3a1a1f; color: var(--red); } .pill.warn { background: #3a2a14; color: var(--orange); } .pill.ok { background: #14301f; color: var(--green); }
+  .bar { height: 7px; background: #1b2540; border-radius: 4px; overflow: hidden; min-width: 90px; }
+  .bar i { display: block; height: 100%; background: var(--accent); }
+  .search { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; min-width: 200px; }
 
   .empty { text-align: center; color: var(--muted); padding: 70px 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
 
-  /* ---------- Panel  ---------- */
   .assist { background: var(--side); border-left: 1px solid var(--line); display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0; }
   .ahead { padding: 16px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
   .ahead .ic { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #5b6ee8, #4ec7a8); }
@@ -113,12 +116,12 @@
   .ask input { flex: 1; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
   .ask button { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 0 14px; font-weight: 600; }
 
-  @media (max-width: 1240px) {
+  @media (max-width: 1280px) {
     .app { grid-template-columns: 1fr; }
     .side { border-right: 0; border-bottom: 1px solid var(--line); }
     .assist { position: static; height: 520px; border-left: 0; border-top: 1px solid var(--line); }
-    .row2 { grid-template-columns: 1fr; }
   }
+  @media (max-width: 900px) { .row2 { grid-template-columns: 1fr; } }
   @media (max-width: 520px) { .donut { flex-direction: column; align-items: flex-start; } .main { padding: 14px 12px 30px; } }
   @media print { .side, .assist, .tools { display: none !important; } .app { display: block; } }
 </style>
@@ -127,22 +130,17 @@
 <div class="app">
 
   <aside class="side">
-    <div class="brand"><div class="logo">DK</div><span>Dashboard Toko</span></div>
+    <div class="brand"><div class="logo">DK</div><span>Dashboard Komplain</span></div>
 
     <div>
       <h3>Data</h3>
       <label class="drop">
         <strong>File komplain</strong>
-        <small>Urutan kolom: tanggal, ID pesanan, alamat, qty, status 1, status 2, penanganan, deskripsi, tindak lanjut</small>
+        <small>Excel atau CSV. Semua komplain, dengan rating negatif atau tidak</small>
         <input type="file" id="fComp" accept=".xlsx,.xls,.csv,.tsv,.txt">
         <div class="fn" id="nComp">Pilih file</div>
       </label>
-      <label class="drop">
-        <strong>File penjualan</strong>
-        <small>Opsional. Untuk grafik pesanan dan pencocokan komplain</small>
-        <input type="file" id="fSales" accept=".xlsx,.xls,.csv,.tsv,.txt">
-        <div class="fn" id="nSales">Pilih file</div>
-      </label>
+      <label class="chk"><input type="checkbox" id="hasHead"> Baris pertama adalah judul kolom</label>
     </div>
 
     <div>
@@ -158,43 +156,42 @@
       </label>
     </div>
 
-    <div class="mapbox" id="map">
-      <h3>Kolom file penjualan</h3>
-      <label class="field">ID pesanan <select id="mId"></select></label>
-      <label class="field">Waktu dibuat <select id="mTime"></select></label>
-      <label class="field">Nilai pesanan <select id="mAmt"></select></label>
-    </div>
+    <details class="mapbox" id="mapbox">
+      <summary>Kolom file komplain</summary>
+      <div id="mapfields"></div>
+    </details>
 
-    <p class="tip">File dibaca di browsermu dan tidak dikirim ke mana pun. Kolom alamat dan telepon di file komplain tidak dibaca.</p>
+    <p class="tip">File dibaca di browsermu dan tidak dikirim ke mana pun. Kolom alamat dan telepon tidak dibaca.</p>
   </aside>
 
   <main class="main">
     <div class="top">
-      <h1>Dashboard Komplain dan Penjualan <span class="badge off" id="badge">Belum ada data</span></h1>
+      <h1>Dashboard Komplain <span class="badge off" id="badge">Belum ada data</span></h1>
       <div class="tools">
         <div class="seg" id="range" role="group" aria-label="Periode">
           <button data-r="7">7 hari</button><button data-r="30">30 hari</button><button data-r="90">90 hari</button><button data-r="all" class="on">Semua</button>
         </div>
+        <button class="btn" id="xls">Unduh Excel</button>
         <button class="btn" id="print">Cetak</button>
       </div>
     </div>
 
     <div class="msg" id="msg"></div>
-    <div class="empty" id="empty">Belum ada data. Unggah file komplain di panel kiri, dan file penjualan kalau ada.</div>
+    <div class="empty" id="empty">Belum ada data. Unggah file komplain di panel kiri, lalu cek pilihan kolomnya.</div>
 
     <div id="dash" hidden>
       <section class="kpis" id="kpis"></section>
 
       <section class="row2">
         <div class="card">
-          <div class="hd"><h2 id="trendTitle">Komplain per hari</h2></div>
+          <div class="hd"><h2>Komplain per hari</h2></div>
           <div class="chart"><canvas id="trend"></canvas></div>
         </div>
         <div class="card">
           <div class="hd">
             <h2>Sebaran komplain</h2>
             <div class="seg" id="dmode" role="group" aria-label="Kelompokkan berdasarkan">
-              <button data-m="s1" class="on">Status</button><button data-m="follow">Tindak lanjut</button><button data-m="handler">Penanggung jawab</button><button data-m="match" id="bMatch">Pencocokan</button>
+              <button data-m="faktor" class="on">Faktor</button><button data-m="jenis">Jenis</button><button data-m="s1">Status</button><button data-m="follow">Tindak lanjut</button><button data-m="handler">Penanggung jawab</button>
             </div>
           </div>
           <div class="donut">
@@ -204,7 +201,40 @@
         </div>
       </section>
 
-      <section class="card">
+      <section class="row2">
+        <div class="card">
+          <div class="hd"><h2>Solusi yang ditawarkan</h2></div>
+          <div class="chart"><canvas id="solusi"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="hd"><h2>Komplain per PIC packing</h2></div>
+          <div class="chart"><canvas id="pic"></canvas></div>
+        </div>
+      </section>
+
+      <section class="row2">
+        <div class="card">
+          <div class="hd"><h2>Rekap per jenis komplain</h2></div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Jenis</th><th class="n">Jumlah</th><th class="n">Internal</th><th class="n">Eksternal</th><th class="n">Biaya solusi</th><th class="n">Rata-rata hari</th></tr></thead>
+              <tbody id="tJenis"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="hd"><h2>Kelengkapan isian</h2></div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Data</th><th class="n">Terisi</th><th>Porsi</th></tr></thead>
+              <tbody id="tFill"></tbody>
+            </table>
+          </div>
+          <p class="tip" style="margin-top:10px">Makin penuh isiannya, makin bisa dipercaya grafik di atas.</p>
+        </div>
+      </section>
+
+      <section class="card full">
         <div class="hd">
           <h2>Masalah komplain paling sering</h2>
           <div class="seg" id="tfilter" role="group" aria-label="Saring tabel">
@@ -217,16 +247,30 @@
             <tbody id="tbody"></tbody>
           </table>
         </div>
-        <p class="tip" style="margin-top:10px">Selesai berarti status 1 dan status 2 keduanya DONE. Status: Kritis jika 50% atau lebih belum selesai, Pantau jika 20% atau lebih, selain itu Terkendali.</p>
+        <p class="tip" style="margin-top:10px">Selesai berarti status 1 dan status 2 keduanya DONE. Kritis: 50% atau lebih belum selesai. Pantau: 20% atau lebih. Selain itu Terkendali.</p>
+      </section>
+
+      <section class="card full">
+        <div class="hd">
+          <h2>Data lengkap</h2>
+          <input class="search" id="search" type="search" placeholder="Cari ID, masalah, PIC, solusi..." aria-label="Cari">
+        </div>
+        <div class="tablewrap">
+          <table class="dense">
+            <thead><tr><th>Tanggal</th><th>ID pesanan</th><th>Masalah</th><th>PIC packing</th><th>Faktor</th><th>Jenis</th><th>Solusi</th><th class="n">Biaya</th><th>Ditangani</th><th class="n">Hari</th><th>Status</th></tr></thead>
+            <tbody id="tdata"></tbody>
+          </table>
+        </div>
+        <p class="tip" id="dataNote" style="margin-top:10px"></p>
       </section>
     </div>
   </main>
 
   <aside class="assist">
-    <div class="ahead"><div class="ic"></div><div><b> otomatis</b><small>Dihitung dari data</small></div></div>
+    <div class="ahead"><div class="ic"></div><div><b>Ringkasan otomatis</b><small>Dihitung dari datamu, bukan AI</small></div></div>
     <div class="chat" id="chat"></div>
     <div class="chips" id="chips">
-      <button>Masalah terbanyak</button><button>Belum selesai</button><button>Per penanggung jawab</button><button>Kualitas data</button><button>Hari puncak</button>
+      <button>Masalah terbanyak</button><button>Belum selesai</button><button>Faktor komplain</button><button>Jenis komplain</button><button>Biaya solusi</button><button>PIC packing</button><button>Lama penanganan</button><button>Kualitas data</button>
     </div>
     <div class="ask">
       <input id="q" type="text" placeholder="Tanya soal data komplain..." aria-label="Pertanyaan">
@@ -241,9 +285,26 @@
 (function () {
   const $ = id => document.getElementById(id);
   const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x !== undefined) e.textContent = x; return e; };
-  const S = { compRows: null, salesRows: null, comp: [], sales: null, range: 'all', dmode: 's1', tfilter: 'all' };
+  const S = { rows: null, comp: [], range: 'all', dmode: 'faktor', tfilter: 'all', q: '' };
   const COLORS = ['#8fd95b', '#6272e8', '#f0993f', '#e0508a', '#4ec7a8', '#8a94ad'];
-  let trendChart = null, donutChart = null, donutTotal = 0;
+  const charts = {}; let donutTotal = 0;
+
+  // Kolom yang dibaca. [kunci, label, pola judul kolom, posisi bawaan bila tanpa judul]
+  const FIELDS = [
+    ['day', 'Tanggal komplain', [/tanggal komplain|tgl komplain|^tanggal$|^tgl$|^date$/i], 0],
+    ['id', 'ID pesanan', [/order.?id|id pesanan|no\.? ?pesanan|pesanan/i], 1],
+    ['s1', 'Status 1', [/status ?1/i], 4],
+    ['s2', 'Status 2', [/status ?2/i], 5],
+    ['handler', 'Penanggung jawab', [/penanggung|handler|\bpj\b|petugas|ditangani oleh/i], 6],
+    ['desc', 'Deskripsi masalah', [/deskripsi|masalah|keluhan/i], 7],
+    ['follow', 'Status tindak lanjut', [/tindak lanjut|follow|\bfu\b/i], 8],
+    ['pic', 'PIC packing', [/pic|packing|packer/i], 9],
+    ['faktor', 'Faktor komplain', [/faktor/i], 10],
+    ['jenis', 'Jenis komplain', [/jenis/i], 11],
+    ['solusi', 'Solusi yang ditawarkan', [/solusi/i], 12],
+    ['handled', 'Tanggal penanganan', [/tanggal penanganan|tgl penanganan|tgl tangani|tanggal ditangani|ditangani/i], 13],
+    ['nominal', 'Nominal solusi (Rp), opsional', [/nominal|biaya|nilai solusi|tukar tambah|selisih/i], -1]
+  ];
 
   // ---------- Membaca file ----------
   function fixRef(ws) {
@@ -301,10 +362,21 @@
     if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, '').replace(',', '.'); else s = s.replace(/,/g, '');
     const n = parseFloat(s); return isNaN(n) ? 0 : n;
   }
+  function extractNominal(t) {
+    t = str(t).toLowerCase(); let m;
+    if ((m = t.match(/rp\.?\s*(\d[\d.,]*)/))) return parseNum(m[1]) || null;
+    if ((m = t.match(/(\d+(?:[.,]\d+)?)\s*(rb|ribu|k)\b/))) return parseFloat(m[1].replace(',', '.')) * 1000;
+    if ((m = t.match(/\b(\d{1,3}(?:[.,]\d{3})+)\b/))) return parseNum(m[1]) || null;
+    if ((m = t.match(/\b(\d{4,7})\b/))) { const n = +m[1]; if (n < 1990 || n > 2100) return n; }
+    return null;
+  }
   const idOf = v => typeof v === 'number' ? '' : str(v);
   const fmt = n => Math.round(n).toLocaleString('id-ID');
-  const fmtDay = k => k.slice(8, 10) + '/' + k.slice(5, 7) + '/' + k.slice(0, 4);
+  const rp = n => 'Rp ' + fmt(n);
+  const fmtDay = k => k ? k.slice(8, 10) + '/' + k.slice(5, 7) + '/' + k.slice(0, 4) : '';
   const pct = (a, b) => b ? Math.round(a * 1000 / b) / 10 : 0;
+  const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+  const short = (s, n) => s.length > n ? s.slice(0, n) + '…' : s;
   function group(list, fn) {
     const m = {}, label = {};
     list.forEach(x => {
@@ -318,48 +390,81 @@
   const showMsg = t => { const e = $('msg'); e.textContent = t; e.className = 'msg show'; };
   const clearMsg = () => { $('msg').className = 'msg'; };
 
-  // ---------- Parsing ----------
-  function parseComplaints(rows) {
-    const out = [];
-    rows.forEach(r => {
+  // ---------- Penyeragaman nilai ----------
+  function normFaktor(raw) {
+    const t = str(raw).toLowerCase(); if (!t) return '';
+    if (/\bintern|\binternal/.test(t)) return 'Internal';
+    if (/pembeli|buyer|customer|konsumen/.test(t)) return 'Eksternal - Pembeli';
+    if (/ekspedisi|kurir|courier|logistik|jnt|jne|sicepat|anteraja|spx|ninja/.test(t)) return 'Eksternal - Ekspedisi';
+    if (/ekstern/.test(t)) return 'Eksternal';
+    return str(raw);
+  }
+  function normJenis(raw) {
+    const t = str(raw).toLowerCase(); if (!t) return '';
+    if (/fulfil|fullfil|full fil|packing|salah kirim|kirim salah/.test(t)) return 'Kesalahan Fulfillment';
+    if (/logistik|ekspedisi|kurir/.test(t)) return 'Logistik';
+    if (/miss|informasi|\binfo\b|deskripsi/.test(t)) return 'Miss Information';
+    return str(raw);
+  }
+  const faktorClass = c => /^Internal/.test(c.faktor) ? 'Internal' : /^Eksternal/.test(c.faktor) ? 'Eksternal' : 'Belum diisi atau lainnya';
+  const isDone = c => /^done$/i.test(c.s1) && /^done$/i.test(c.s2);
+
+  // ---------- Pemetaan kolom ----------
+  function sample(v) {
+    if (v instanceof Date) return 'tanggal';
+    const s = str(v); if (!s) return '';
+    return (/\n/.test(s) || s.length > 40) ? 'teks panjang' : s.slice(0, 18);
+  }
+  function buildMap() {
+    const rows = S.rows || [], hasH = $('hasHead').checked, head = rows[0] || [], first = rows[hasH ? 1 : 0] || [];
+    const ncol = rows.slice(0, 50).reduce((a, r) => Math.max(a, r.length), 0), used = {}, box = $('mapfields');
+    box.innerHTML = '';
+    FIELDS.forEach(f => {
+      let idx = -1;
+      if (hasH) { for (let i = 0; i < ncol && idx < 0; i++) if (!used[i] && f[2].some(p => p.test(str(head[i])))) idx = i; }
+      else idx = f[3] < ncol ? f[3] : -1;
+      if (idx >= 0) used[idx] = 1;
+      const lab = el('label', 'field', f[1]), sel = el('select'); sel.id = 'map_' + f[0];
+      const none = el('option', null, '(tidak dipakai)'); none.value = '-1'; sel.appendChild(none);
+      for (let i = 0; i < ncol; i++) {
+        const s = hasH ? short(str(head[i]), 24) : sample(first[i]);
+        const o = el('option', null, XLSX.utils.encode_col(i) + (s ? ' · ' + s : '')); o.value = String(i); sel.appendChild(o);
+      }
+      sel.value = String(idx); sel.addEventListener('change', reparse);
+      lab.appendChild(sel); box.appendChild(lab);
+    });
+    $('mapbox').classList.add('show'); $('mapbox').open = true;
+  }
+  const getMap = () => { const m = {}; FIELDS.forEach(f => { const s = $('map_' + f[0]); m[f[0]] = s ? +s.value : -1; }); return m; };
+
+  // ---------- Parsing komplain ----------
+  function parseComplaints() {
+    const rows = S.rows; if (!rows) return [];
+    const m = getMap(), hasH = $('hasHead').checked, out = [];
+    const g = (r, k) => m[k] >= 0 ? r[m[k]] : '';
+    rows.slice(hasH ? 1 : 0).forEach(r => {
       if (r.every(c => str(c) === '')) return;
-      const idRaw = idOf(r[1]);
-      if (/order|^id$|pesanan/i.test(idRaw)) return;
-      out.push({ day: parseDate(r[0]), id: idRaw, valid: /^\d{18}$/.test(idRaw),
-        s1: str(r[4]), s2: str(r[5]), handler: str(r[6]), desc: str(r[7]), follow: str(r[8]) });
+      const id = idOf(g(r, 'id')), day = parseDate(g(r, 'day')), handled = parseDate(g(r, 'handled'));
+      const solusi = str(g(r, 'solusi'));
+      let nominal = null, nSrc = null;
+      if (m.nominal >= 0) { const n = parseNum(g(r, 'nominal')); if (n > 0) { nominal = n; nSrc = 'kolom'; } }
+      if (nominal === null && solusi) { const n = extractNominal(solusi); if (n) { nominal = n; nSrc = 'teks'; } }
+      let lama = null;
+      if (day && handled) {
+        const a = day.split('-'), b = handled.split('-');
+        const d = (Date.UTC(+b[0], +b[1] - 1, +b[2]) - Date.UTC(+a[0], +a[1] - 1, +a[2])) / 864e5;
+        if (d >= 0 && d < 365) lama = d;
+      }
+      out.push({ day, id, valid: m.id < 0 ? true : /^\d{18}$/.test(id),
+        s1: str(g(r, 's1')), s2: str(g(r, 's2')), handler: str(g(r, 'handler')), desc: str(g(r, 'desc')), follow: str(g(r, 'follow')),
+        pic: str(g(r, 'pic')), faktor: normFaktor(g(r, 'faktor')), jenis: normJenis(g(r, 'jenis')),
+        solusi, nominal, nSrc, handled, lama });
     });
     return out;
   }
-  function guessCol(head, pats) {
-    for (const p of pats) for (let i = 0; i < head.length; i++) if (p.test(str(head[i]))) return i;
-    return -1;
-  }
-  function fillMap(head) {
-    const defs = [['mId', [/^order id$/i, /order.?id/i, /id pesanan/i]], ['mTime', [/created time/i, /waktu dibuat/i, /created/i]], ['mAmt', [/order amount/i, /nilai pesanan/i, /amount/i]]];
-    defs.forEach(d => {
-      const sel = $(d[0]); sel.innerHTML = '';
-      const none = el('option', null, '(tidak dipakai)'); none.value = '-1'; sel.appendChild(none);
-      head.forEach((h, i) => { const o = el('option', null, str(h) || ('Kolom ' + (i + 1))); o.value = String(i); sel.appendChild(o); });
-      sel.value = String(guessCol(head, d[1]));
-    });
-    $('map').classList.add('show');
-  }
-  function parseSales(rows) {
-    const iId = +$('mId').value, iT = +$('mTime').value, iA = +$('mAmt').value, orders = {};
-    rows.slice(1).forEach(r => {
-      const id = iId >= 0 ? idOf(r[iId]) : ''; if (!id) return;
-      if (!orders[id]) orders[id] = { id, day: iT >= 0 ? parseDate(r[iT]) : null, amount: iA >= 0 ? parseNum(r[iA]) : 0 };
-    });
-    return { orders };
-  }
 
   // ---------- Periode ----------
-  function allDays() {
-    const d = [];
-    S.comp.forEach(c => c.day && d.push(c.day));
-    if (S.sales) Object.values(S.sales.orders).forEach(o => o.day && d.push(o.day));
-    return d.sort();
-  }
+  function allDays() { return S.comp.map(c => c.day).filter(Boolean).sort(); }
   function cutoff() {
     if (S.range === 'all') return null;
     const d = allDays(); if (!d.length) return null;
@@ -367,18 +472,9 @@
     dt.setUTCDate(dt.getUTCDate() - (+S.range - 1));
     return dt.toISOString().slice(0, 10);
   }
-  const inR = (day, cut) => !cut || (day && day >= cut);
-  const isDone = c => /^done$/i.test(c.s1) && /^done$/i.test(c.s2);
-
   function view() {
     const cut = cutoff();
-    const C = S.comp.filter(c => inR(c.day, cut));
-    const O = S.sales ? Object.values(S.sales.orders).filter(o => inR(o.day, cut)) : [];
-    return { C, O, cut };
-  }
-  function matchAll() {
-    if (!S.sales) { S.comp.forEach(c => c.m = null); return; }
-    S.comp.forEach(c => { c.m = !c.valid ? 'Tidak valid' : (S.sales.orders[c.id] ? 'Cocok' : 'Tidak ketemu di penjualan'); });
+    return { C: S.comp.filter(c => !cut || (c.day && c.day >= cut)), cut };
   }
 
   // ---------- Render ----------
@@ -388,47 +484,33 @@
   }
   function renderKpis(V) {
     $('kpis').innerHTML = '';
-    const n = V.C.length, done = V.C.filter(isDone).length, wait = V.C.filter(c => /wait|tunggu/i.test(c.follow)).length;
+    const C = V.C, n = C.length, done = C.filter(isDone).length, wait = C.filter(c => /wait|tunggu/i.test(c.follow)).length;
+    const withF = C.filter(c => c.faktor), internal = withF.filter(c => faktorClass(c) === 'Internal').length;
+    const withN = C.filter(c => c.nominal !== null), sum = withN.reduce((a, c) => a + c.nominal, 0);
+    const lamas = C.filter(c => c.lama !== null).map(c => c.lama);
     kpi('Total komplain', fmt(n), V.cut ? 'dalam periode terpilih' : 'semua data');
     kpi('Tingkat selesai', pct(done, n) + '%', fmt(n - done) + ' belum selesai', n - done > 0 ? 'bad' : 'good');
     kpi('Menunggu respon', fmt(wait), pct(wait, n) + '% dari komplain', wait > 0 ? 'bad' : 'good');
-    if (S.sales) {
-      const uniq = {}; V.C.forEach(c => { if (c.m === 'Cocok') uniq[c.id] = 1; });
-      const u = Object.keys(uniq).length;
-      kpi('Komplain per 100 pesanan', V.O.length ? (u * 100 / V.O.length).toFixed(1) : '0', fmt(u) + ' dari ' + fmt(V.O.length) + ' pesanan');
-    } else {
-      kpi('Pesanan', '-', 'unggah file penjualan');
-    }
+    kpi('Faktor internal', withF.length ? pct(internal, withF.length) + '%' : '-', withF.length ? 'dari ' + fmt(withF.length) + ' yang faktornya terisi' : 'faktor belum terisi');
+    kpi('Biaya solusi', withN.length ? rp(sum) : '-', withN.length ? fmt(withN.length) + ' komplain bernominal' : 'nominal belum terbaca');
+    kpi('Rata-rata penanganan', lamas.length ? avg(lamas).toFixed(1) + ' hari' : '-', lamas.length ? 'dari ' + fmt(lamas.length) + ' komplain' : 'tanggal penanganan belum terbaca');
   }
+  const gridC = { color: '#1f2840' }, tickC = { color: '#8a94ad' };
+  function mk(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart($(id), cfg); }
   function renderTrend(V) {
-    const cm = {}, om = {};
-    V.C.forEach(c => { if (c.day) cm[c.day] = (cm[c.day] || 0) + 1; });
-    V.O.forEach(o => { if (o.day) om[o.day] = (om[o.day] || 0) + 1; });
-    const days = Object.keys(Object.assign({}, cm, S.sales ? om : {})).sort();
-    const ds = [{ label: 'Komplain', data: days.map(d => cm[d] || 0), borderColor: COLORS[0], backgroundColor: 'rgba(143,217,91,.14)', fill: true, tension: .3, pointRadius: 2, yAxisID: 'y' }];
-    if (S.sales) ds.push({ label: 'Pesanan', data: days.map(d => om[d] || 0), borderColor: COLORS[1], backgroundColor: COLORS[1], tension: .3, pointRadius: 2, yAxisID: 'y1' });
-    $('trendTitle').textContent = S.sales ? 'Komplain dan pesanan per hari' : 'Komplain per hari';
-    if (trendChart) trendChart.destroy();
-    const grid = { color: '#1f2840' }, tick = { color: '#8a94ad' };
-    const scales = { x: { grid, ticks: { color: tick.color, maxRotation: 60, callback(v) { return fmtDay(this.getLabelForValue(v)).slice(0, 5); } } },
-      y: { beginAtZero: true, grid, ticks: { color: tick.color, precision: 0 }, title: { display: !!S.sales, text: 'Komplain', color: '#8a94ad' } } };
-    if (S.sales) scales.y1 = { beginAtZero: true, position: 'right', grid: { display: false }, ticks: { color: tick.color, precision: 0 }, title: { display: true, text: 'Pesanan', color: '#8a94ad' } };
-    trendChart = new Chart($('trend'), { type: 'line', data: { labels: days, datasets: ds },
-      options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
-        plugins: { legend: { display: !!S.sales, labels: { color: '#e8ecf5' } },
-          tooltip: { callbacks: { title: items => fmtDay(items[0].label) } } }, scales } });
+    const m = {}; V.C.forEach(c => { if (c.day) m[c.day] = (m[c.day] || 0) + 1; });
+    const days = Object.keys(m).sort();
+    mk('trend', { type: 'line', data: { labels: days, datasets: [{ label: 'Komplain', data: days.map(d => m[d]), borderColor: COLORS[0], backgroundColor: 'rgba(143,217,91,.14)', fill: true, tension: .3, pointRadius: 2 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { title: i => fmtDay(i[0].label) } } },
+        scales: { x: { grid: gridC, ticks: { color: tickC.color, maxRotation: 60, callback(v) { return fmtDay(this.getLabelForValue(v)).slice(0, 5); } } }, y: { beginAtZero: true, grid: gridC, ticks: { color: tickC.color, precision: 0 } } } } });
   }
   function renderDonut(V) {
-    $('bMatch').style.display = S.sales ? '' : 'none';
-    if (S.dmode === 'match' && !S.sales) S.dmode = 's1';
     document.querySelectorAll('#dmode button').forEach(b => b.classList.toggle('on', b.dataset.m === S.dmode));
-    const fn = { s1: c => c.s1, follow: c => c.follow, handler: c => c.handler, match: c => c.m }[S.dmode];
+    const fn = { faktor: c => c.faktor, jenis: c => c.jenis, s1: c => c.s1, follow: c => c.follow, handler: c => c.handler }[S.dmode];
     let g = group(V.C, fn);
     if (g.length > 5) { const rest = g.slice(5).reduce((a, x) => a + x.n, 0); g = g.slice(0, 5).concat([{ name: 'Lainnya', n: rest }]); }
     donutTotal = V.C.length;
-    if (donutChart) donutChart.destroy();
-    donutChart = new Chart($('donut'), { type: 'doughnut',
-      data: { labels: g.map(x => x.name), datasets: [{ data: g.map(x => x.n), backgroundColor: COLORS, borderColor: '#111829', borderWidth: 2 }] },
+    mk('donut', { type: 'doughnut', data: { labels: g.map(x => x.name), datasets: [{ data: g.map(x => x.n), backgroundColor: COLORS, borderColor: '#111829', borderWidth: 2 }] },
       options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { display: false } } },
       plugins: [{ id: 'center', afterDraw(ch) {
         const a = ch.chartArea, c = ch.ctx, x = (a.left + a.right) / 2, y = (a.top + a.bottom) / 2;
@@ -441,120 +523,198 @@
       r.appendChild(dot); r.appendChild(el('span', null, x.name)); r.appendChild(el('b', null, pct(x.n, donutTotal) + '%')); lg.appendChild(r);
     });
   }
-  function level(rate) { return rate >= .5 ? 'bad' : rate >= .2 ? 'warn' : 'ok'; }
+  function renderSolusi(V) {
+    const g = group(V.C.filter(c => c.solusi), c => c.solusi).slice(0, 8);
+    mk('solusi', { type: 'bar', data: { labels: g.map(x => short(x.name, 34)), datasets: [{ label: 'Komplain', data: g.map(x => x.n), backgroundColor: COLORS[0] }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, grid: gridC, ticks: { color: tickC.color, precision: 0 } }, y: { grid: { display: false }, ticks: { color: '#e8ecf5' } } } } });
+  }
+  function renderPic(V) {
+    const g = group(V.C.filter(c => c.pic), c => c.pic).slice(0, 10), cls = ['Internal', 'Eksternal', 'Belum diisi atau lainnya'], col = [COLORS[2], COLORS[1], COLORS[5]];
+    mk('pic', { type: 'bar', data: { labels: g.map(x => short(x.name, 24)), datasets: cls.map((k, i) => ({ label: k, data: g.map(x => x.items.filter(c => faktorClass(c) === k).length), backgroundColor: col[i] })) },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#e8ecf5' } } },
+        scales: { x: { stacked: true, beginAtZero: true, grid: gridC, ticks: { color: tickC.color, precision: 0 } }, y: { stacked: true, grid: { display: false }, ticks: { color: '#e8ecf5' } } } } });
+  }
+  function row(tb, cells) {
+    const tr = el('tr'); cells.forEach(c => { const td = el('td', c.n ? 'n' : null); if (c.node) td.appendChild(c.node); else td.textContent = c.t; tr.appendChild(td); }); tb.appendChild(tr);
+  }
+  function renderJenis(V) {
+    const tb = $('tJenis'); tb.innerHTML = '';
+    const g = group(V.C, c => c.jenis);
+    g.forEach(x => {
+      const sum = x.items.filter(c => c.nominal !== null).reduce((a, c) => a + c.nominal, 0), has = x.items.some(c => c.nominal !== null);
+      const l = x.items.filter(c => c.lama !== null).map(c => c.lama);
+      row(tb, [{ t: x.name }, { t: fmt(x.n), n: 1 }, { t: fmt(x.items.filter(c => faktorClass(c) === 'Internal').length), n: 1 }, { t: fmt(x.items.filter(c => faktorClass(c) === 'Eksternal').length), n: 1 },
+        { t: has ? rp(sum) : '-', n: 1 }, { t: l.length ? avg(l).toFixed(1) : '-', n: 1 }]);
+    });
+    if (!g.length) row(tb, [{ t: 'Belum ada data.' }]);
+  }
+  function fillStats(C) {
+    return [['PIC packing', C.filter(c => c.pic).length], ['Faktor komplain', C.filter(c => c.faktor).length], ['Jenis komplain', C.filter(c => c.jenis).length],
+      ['Solusi yang ditawarkan', C.filter(c => c.solusi).length], ['Nominal solusi', C.filter(c => c.nominal !== null).length], ['Tanggal penanganan', C.filter(c => c.handled).length]];
+  }
+  function renderFill(V) {
+    const tb = $('tFill'); tb.innerHTML = '';
+    fillStats(V.C).forEach(([name, n]) => {
+      const bar = el('div', 'bar'), i = el('i'); i.style.width = pct(n, V.C.length) + '%'; bar.appendChild(i);
+      row(tb, [{ t: name }, { t: n + ' dari ' + V.C.length, n: 1 }, { node: bar }]);
+    });
+  }
+  const level = r => r >= .5 ? 'bad' : r >= .2 ? 'warn' : 'ok';
   function renderTable(V) {
     document.querySelectorAll('#tfilter button').forEach(b => b.classList.toggle('on', b.dataset.f === S.tfilter));
     const tb = $('tbody'); tb.innerHTML = '';
     let g = group(V.C, c => c.desc).map(x => { const d = x.items.filter(isDone).length; return { name: x.name, n: x.n, done: d, rate: 1 - d / x.n }; });
     if (S.tfilter === 'attn') g = g.filter(x => x.rate >= .2); else if (S.tfilter === 'ok') g = g.filter(x => x.rate < .2);
     g.slice(0, 10).forEach(x => {
-      const tr = el('tr'), lv = level(x.rate), tdName = el('td', null, x.name);
-      tr.appendChild(tdName); tr.appendChild(el('td', 'n', fmt(x.n))); tr.appendChild(el('td', 'n', pct(x.n, V.C.length) + '%'));
-      tr.appendChild(el('td', 'n', pct(x.done, x.n) + '%'));
-      const ts = el('td'); ts.appendChild(el('span', 'pill ' + lv, lv === 'bad' ? 'Kritis' : lv === 'warn' ? 'Pantau' : 'Terkendali')); tr.appendChild(ts);
-      tb.appendChild(tr);
+      const lv = level(x.rate);
+      row(tb, [{ t: x.name }, { t: fmt(x.n), n: 1 }, { t: pct(x.n, V.C.length) + '%', n: 1 }, { t: pct(x.done, x.n) + '%', n: 1 },
+        { node: el('span', 'pill ' + lv, lv === 'bad' ? 'Kritis' : lv === 'warn' ? 'Pantau' : 'Terkendali') }]);
     });
-    if (!g.length) { const tr = el('tr'), td = el('td', null, 'Tidak ada baris untuk saringan ini.'); td.colSpan = 5; tr.appendChild(td); tb.appendChild(tr); }
+    if (!g.length) row(tb, [{ t: 'Tidak ada baris untuk saringan ini.' }]);
+  }
+  function renderData(V) {
+    const tb = $('tdata'); tb.innerHTML = '';
+    const q = S.q.toLowerCase();
+    let list = V.C.slice().sort((a, b) => (b.day || '').localeCompare(a.day || ''));
+    if (q) list = list.filter(c => [c.id, c.desc, c.pic, c.faktor, c.jenis, c.solusi, c.handler, c.follow].join(' ').toLowerCase().includes(q));
+    list.slice(0, 200).forEach(c => {
+      row(tb, [{ t: fmtDay(c.day) }, { t: c.id + (c.valid ? '' : ' (tidak valid)') }, { t: c.desc }, { t: c.pic }, { t: c.faktor }, { t: c.jenis }, { t: c.solusi },
+        { t: c.nominal !== null ? rp(c.nominal) : '', n: 1 }, { t: fmtDay(c.handled) }, { t: c.lama !== null ? String(c.lama) : '', n: 1 }, { t: isDone(c) ? 'Selesai' : 'Belum' }]);
+    });
+    if (!list.length) row(tb, [{ t: 'Tidak ada data yang cocok.' }]);
+    $('dataNote').textContent = 'Menampilkan ' + Math.min(200, list.length) + ' dari ' + list.length + ' komplain. Gunakan Unduh Excel untuk semuanya. Nominal yang diberi tanda dari teks dibaca otomatis dari kolom solusi.';
   }
 
-  // ---------- Panel  ----------
+  // ---------- Panel ringkasan ----------
   function addMsg(who, o) {
-    const w = el('div', 'msgwrap ' + who); w.appendChild(el('div', 'who', who === 'me' ? 'Kamu' : ' otomatis'));
+    const w = el('div', 'msgwrap ' + who); w.appendChild(el('div', 'who', who === 'me' ? 'Kamu' : 'Ringkasan otomatis'));
     const b = el('div', 'bubble');
     if (o.text) b.appendChild(el('p', null, o.text));
     if (o.list) { const ul = el('ul'); o.list.forEach(t => ul.appendChild(el('li', null, t))); b.appendChild(ul); }
     if (o.alert) { const a = el('div', 'abox'); a.appendChild(el('div', 'atitle', o.alert.title)); o.alert.lines.forEach(l => a.appendChild(el('p', null, l))); b.appendChild(a); }
     w.appendChild(b); $('chat').appendChild(w); $('chat').scrollTop = $('chat').scrollHeight;
   }
-  function quality(V) {
-    const inv = V.C.filter(c => !c.valid).length, un = V.C.filter(c => c.m === 'Tidak ketemu di penjualan').length, nodate = V.C.filter(c => !c.day).length;
-    return { inv, un, nodate };
-  }
+  function incomplete(C) { return fillStats(C).filter(x => x[1] < C.length).map(x => [x[0], C.length - x[1]]); }
   function answer(q) {
     const V = view(), C = V.C, n = C.length; q = q.toLowerCase();
     if (!n) return { text: 'Tidak ada komplain pada periode ini.' };
-    if (/kualitas|valid|cocok|match|\bid\b|data/.test(q)) {
-      const Q = quality(V), l = [Q.inv + ' komplain dengan ID tidak valid (kosong, bukan 18 digit, atau sudah menjadi notasi ilmiah seperti 5.79E+17).'];
-      if (S.sales) l.push(Q.un + ' komplain valid tapi ID-nya tidak ada di file penjualan. Biasanya karena pesanannya belum ada di file penjualan yang diunggah.');
-      else l.push('File penjualan belum diunggah, jadi komplain belum bisa dicocokkan ke pesanan.');
-      if (Q.nodate) l.push(Q.nodate + ' komplain tanpa tanggal terbaca, jadi tidak muncul di grafik harian.');
-      return { text: 'Kualitas data pada periode ini:', list: l };
+    if (/kualitas|valid|lengkap|kosong|isian/.test(q)) {
+      const l = [], inv = C.filter(c => !c.valid).length, nd = C.filter(c => !c.day).length;
+      const ids = {}; C.forEach(c => { if (c.id) ids[c.id] = (ids[c.id] || 0) + 1; });
+      const dup = Object.keys(ids).filter(k => ids[k] > 1).length;
+      incomplete(C).forEach(x => l.push(x[1] + ' komplain belum punya ' + x[0].toLowerCase() + '.'));
+      if (inv) l.push(inv + ' komplain punya ID pesanan tidak valid (kosong, bukan 18 digit, atau rusak jadi notasi ilmiah).');
+      if (dup) l.push(dup + ' ID pesanan muncul lebih dari satu kali.');
+      if (nd) l.push(nd + ' komplain tanpa tanggal terbaca, jadi tidak ada di grafik harian.');
+      return l.length ? { text: 'Kualitas data pada periode ini:', list: l } : { text: 'Semua isian terisi lengkap dan ID pesanan valid.' };
+    }
+    if (/biaya|solusi|nominal|tukar|\brp\b|uang/.test(q)) {
+      const withN = C.filter(c => c.nominal !== null), sum = withN.reduce((a, c) => a + c.nominal, 0), l = [];
+      group(C.filter(c => c.solusi), c => c.solusi).slice(0, 5).forEach(x => l.push(x.name + ': ' + x.n + ' komplain'));
+      if (withN.length) { l.push('Total biaya solusi: ' + rp(sum) + ' dari ' + withN.length + ' komplain (rata-rata ' + rp(sum / withN.length) + ').');
+        const bj = group(withN, c => c.jenis).map(x => [x.name, x.items.reduce((a, c) => a + c.nominal, 0)]).sort((a, b) => b[1] - a[1])[0];
+        if (bj) l.push('Jenis dengan biaya terbesar: ' + bj[0] + ' (' + rp(bj[1]) + ').'); }
+      else l.push('Belum ada nominal terbaca. Isi kolom nominal atau tulis angka di kolom solusi, misalnya "tukar tambah Rp15.000".');
+      return { text: 'Solusi yang paling sering ditawarkan:', list: l };
+    }
+    if (/faktor|internal|eksternal|pembeli|ekspedisi/.test(q)) {
+      const g = group(C, c => c.faktor);
+      return { text: 'Faktor komplain:', list: g.map(x => x.name + ': ' + x.n + ' (' + pct(x.n, n) + '%)') };
+    }
+    if (/jenis|fulfil|fullfil|logistik|miss/.test(q)) {
+      return { text: 'Jenis komplain:', list: group(C, c => c.jenis).map(x => x.name + ': ' + x.n + ' (' + pct(x.n, n) + '%)') };
+    }
+    if (/\bpic\b|packing|packer/.test(q)) {
+      const g = group(C.filter(c => c.pic), c => c.pic).slice(0, 6);
+      return g.length ? { text: 'Komplain per PIC packing:', list: g.map(x => x.name + ': ' + x.n + ' komplain, ' + x.items.filter(c => faktorClass(c) === 'Internal').length + ' berfaktor internal') }
+        : { text: 'Kolom PIC packing belum terisi atau belum dipilih di panel kiri.' };
+    }
+    if (/lama|penanganan|cepat|lambat|\bsla\b/.test(q)) {
+      const L = C.filter(c => c.lama !== null);
+      if (!L.length) return { text: 'Belum ada komplain dengan tanggal komplain dan tanggal penanganan yang sama-sama terbaca.' };
+      const mx = L.slice().sort((a, b) => b.lama - a.lama)[0], l = ['Rata-rata ' + avg(L.map(c => c.lama)).toFixed(1) + ' hari dari ' + L.length + ' komplain.', 'Terlama ' + mx.lama + ' hari (komplain ' + fmtDay(mx.day) + ').'];
+      const slow = L.filter(c => c.lama >= 3).length; l.push(slow + ' komplain butuh 3 hari atau lebih.');
+      return { text: 'Lama penanganan:', list: l };
     }
     if (/belum|pending|selesai|open/.test(q)) {
-      const un = C.filter(c => !isDone(c)), byH = group(un, c => c.handler).slice(0, 3), byP = group(un, c => c.desc).slice(0, 3);
+      const un = C.filter(c => !isDone(c));
       if (!un.length) return { text: 'Semua ' + n + ' komplain berstatus selesai.' };
       return { text: un.length + ' dari ' + n + ' komplain belum selesai (' + pct(un.length, n) + '%).',
-        list: byP.map(x => 'Masalah: ' + x.name + ' (' + x.n + ')').concat(byH.map(x => 'Penanggung jawab: ' + x.name + ' (' + x.n + ' belum selesai)')) };
-    }
-    if (/pj|penanggung|handler|petugas|siapa|alvi/.test(q)) {
-      return { text: 'Komplain per penanggung jawab:', list: group(C, c => c.handler).slice(0, 8).map(x => x.name + ': ' + x.n + ' komplain, ' + x.items.filter(c => !isDone(c)).length + ' belum selesai') };
+        list: group(un, c => c.desc).slice(0, 3).map(x => 'Masalah: ' + x.name + ' (' + x.n + ')').concat(group(un, c => c.handler).slice(0, 3).map(x => 'Penanggung jawab: ' + x.name + ' (' + x.n + ' belum selesai)')) };
     }
     if (/tunggu|respon|wait/.test(q)) {
       const w = C.filter(c => /wait|tunggu/i.test(c.follow));
       return { text: w.length + ' komplain berstatus menunggu respon (' + pct(w.length, n) + '%).', list: group(w, c => c.handler).slice(0, 5).map(x => x.name + ': ' + x.n) };
     }
+    if (/pj|penanggung|handler|petugas|siapa/.test(q)) {
+      return { text: 'Komplain per penanggung jawab:', list: group(C, c => c.handler).slice(0, 8).map(x => x.name + ': ' + x.n + ' komplain, ' + x.items.filter(c => !isDone(c)).length + ' belum selesai') };
+    }
     if (/hari|tren|puncak|naik|turun|tanggal/.test(q)) {
       const g = group(C.filter(c => c.day), c => c.day).slice(0, 3);
-      return g.length ? { text: 'Hari dengan komplain terbanyak:', list: g.map(x => fmtDay(x.name) + ': ' + x.n + ' komplain') } : { text: 'Tidak ada tanggal yang terbaca. Cek pengaturan tahun dan urutan tanggal di panel kiri.' };
+      return g.length ? { text: 'Hari dengan komplain terbanyak:', list: g.map(x => fmtDay(x.name) + ': ' + x.n + ' komplain') } : { text: 'Tidak ada tanggal yang terbaca. Cek pengaturan tahun, urutan tanggal, dan kolom tanggal di panel kiri.' };
     }
-    if (/masalah|keluhan|sering|banyak|issue|terbanyak/.test(q)) {
+    if (/masalah|keluhan|sering|banyak|terbanyak/.test(q)) {
       return { text: 'Masalah terbanyak:', list: group(C, c => c.desc).slice(0, 5).map(x => x.name + ': ' + x.n + ' (' + pct(x.n, n) + '%)') };
     }
-    return { text: 'Saya belum paham pertanyaan itu. Ini  yang dihitung dari datamu, bukan AI, jadi jawabannya terbatas. Coba tanya soal: masalah terbanyak, belum selesai, penanggung jawab, menunggu respon, hari puncak, atau kualitas data.' };
+    return { text: 'Saya belum paham pertanyaan itu. Ini ringkasan yang dihitung dari datamu, bukan AI, jadi jawabannya terbatas. Coba tanya soal: masalah terbanyak, belum selesai, faktor, jenis, biaya solusi, PIC packing, lama penanganan, atau kualitas data.' };
   }
   function greet() {
     $('chat').innerHTML = '';
-    const V = view(), n = V.C.length;
+    const C = view().C, n = C.length;
     if (!n) { addMsg('bot', { text: 'Belum ada komplain untuk diringkas.' }); return; }
-    const days = V.C.map(c => c.day).filter(Boolean).sort(), done = V.C.filter(isDone).length;
-    const top = group(V.C, c => c.desc)[0], Q = quality(V), l = [];
-    l.push(fmt(n) + ' komplain' + (days.length ? ', ' + fmtDay(days[0]) + ' sampai ' + fmtDay(days[days.length - 1]) : '') + '.');
-    l.push('Selesai: ' + pct(done, n) + '%. Belum selesai: ' + (n - done) + '.');
-    l.push('Masalah terbanyak: ' + top.name + ' (' + top.n + ' komplain, ' + pct(top.n, n) + '%).');
-    const o = { text: 'Ini yang terbaca dari datamu:', list: l };
-    const al = [];
-    if (Q.inv) al.push(Q.inv + ' komplain punya ID pesanan tidak valid. Pastikan kolom ID di file berformat teks.');
-    if (S.sales && Q.un) al.push(Q.un + ' komplain tidak ketemu di file penjualan. Mungkin file penjualan periode itu belum diunggah.');
-    if (al.length) o.alert = { title: 'PERHATIAN DATA', lines: al };
+    const days = C.map(c => c.day).filter(Boolean).sort(), done = C.filter(isDone).length, top = group(C, c => c.desc)[0];
+    const l = [fmt(n) + ' komplain' + (days.length ? ', ' + fmtDay(days[0]) + ' sampai ' + fmtDay(days[days.length - 1]) : '') + '.',
+      'Selesai: ' + pct(done, n) + '%. Belum selesai: ' + (n - done) + '.', 'Masalah terbanyak: ' + top.name + ' (' + top.n + ' komplain, ' + pct(top.n, n) + '%).'];
+    const withF = C.filter(c => c.faktor);
+    if (withF.length) l.push('Faktor internal: ' + pct(withF.filter(c => faktorClass(c) === 'Internal').length, withF.length) + '% dari yang faktornya terisi.');
+    const o = { text: 'Ini yang terbaca dari datamu:', list: l }, miss = incomplete(C);
+    if (miss.length) o.alert = { title: 'KELENGKAPAN DATA', lines: miss.map(x => x[1] + ' komplain belum punya ' + x[0].toLowerCase() + '.') };
     addMsg('bot', o);
   }
   function ask(q) { q = q.trim(); if (!q) return; addMsg('me', { text: q }); addMsg('bot', answer(q)); }
 
+  // ---------- Unduh ----------
+  function exportXls() {
+    const V = view(), head = ['Tanggal komplain', 'ID pesanan', 'Masalah', 'Status 1', 'Status 2', 'Penanggung jawab', 'Tindak lanjut', 'PIC packing', 'Faktor', 'Jenis', 'Solusi', 'Nominal solusi', 'Tanggal penanganan', 'Lama penanganan (hari)'];
+    const data = [head].concat(V.C.map(c => [fmtDay(c.day), c.id, c.desc, c.s1, c.s2, c.handler, c.follow, c.pic, c.faktor, c.jenis, c.solusi, c.nominal === null ? '' : c.nominal, fmtDay(c.handled), c.lama === null ? '' : c.lama]));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), 'Komplain');
+    XLSX.writeFile(wb, 'komplain-rapi.xlsx');
+  }
+
   // ---------- Alur ----------
   function renderAll() {
-    const has = S.comp.length > 0 || S.sales;
+    const has = S.comp.length > 0;
     $('dash').hidden = !has; $('empty').style.display = has ? 'none' : 'block';
     const b = $('badge'); b.textContent = has ? 'Data dimuat' : 'Belum ada data'; b.className = 'badge' + (has ? '' : ' off');
     if (!has) return;
     const V = view();
-    renderKpis(V); renderTrend(V); renderDonut(V); renderTable(V); greet();
+    renderKpis(V); renderTrend(V); renderDonut(V); renderSolusi(V); renderPic(V); renderJenis(V); renderFill(V); renderTable(V); renderData(V); greet();
   }
-  function reparse() {
-    if (S.compRows) S.comp = parseComplaints(S.compRows);
-    if (S.salesRows) S.sales = parseSales(S.salesRows);
-    matchAll(); renderAll();
-  }
+  function reparse() { S.comp = parseComplaints(); renderAll(); }
   $('fComp').addEventListener('change', e => {
     const f = e.target.files[0]; if (!f) return; $('nComp').textContent = f.name; clearMsg();
-    readFile(f).then(rows => { S.compRows = rows; reparse(); }).catch(err => showMsg('File komplain tidak bisa dibaca: ' + err.message));
-  });
-  $('fSales').addEventListener('change', e => {
-    const f = e.target.files[0]; if (!f) return; $('nSales').textContent = f.name; clearMsg();
     readFile(f).then(rows => {
       if (!rows.length) throw new Error('file kosong');
-      S.salesRows = rows; fillMap(rows[0]); reparse();
-      if (!Object.keys(S.sales.orders).length) showMsg('Tidak ada ID pesanan terbaca. Pilih kolom "ID pesanan" yang benar di panel kiri.');
-    }).catch(err => showMsg('File penjualan tidak bisa dibaca: ' + err.message));
+      S.rows = rows;
+      const r0 = rows[0].map(str).join(' ');
+      $('hasHead').checked = !/\d{10,}/.test(r0) && /[a-z]{3,}/i.test(r0);
+      buildMap(); reparse();
+      if (!S.comp.length) showMsg('Tidak ada baris terbaca. Cek kotak "Baris pertama adalah judul kolom" dan pilihan kolom di panel kiri.');
+    }).catch(err => showMsg('File tidak bisa dibaca: ' + err.message));
   });
-  ['mId', 'mTime', 'mAmt', 'year', 'order'].forEach(id => $(id).addEventListener('change', reparse));
+  $('hasHead').addEventListener('change', () => { if (S.rows) { buildMap(); reparse(); } });
+  ['year', 'order'].forEach(id => $(id).addEventListener('change', reparse));
   $('range').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.range = b.dataset.r;
-    document.querySelectorAll('#range button').forEach(x => x.classList.toggle('on', x === b)); if (S.comp.length || S.sales) renderAll(); });
+    document.querySelectorAll('#range button').forEach(x => x.classList.toggle('on', x === b)); if (S.comp.length) renderAll(); });
   $('dmode').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.dmode = b.dataset.m; renderDonut(view()); });
   $('tfilter').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.tfilter = b.dataset.f; renderTable(view()); });
+  $('search').addEventListener('input', e => { S.q = e.target.value; renderData(view()); });
   $('chips').addEventListener('click', e => { const b = e.target.closest('button'); if (b && S.comp.length) ask(b.textContent); });
   $('send').addEventListener('click', () => { if (S.comp.length) { ask($('q').value); $('q').value = ''; } });
   $('q').addEventListener('keydown', e => { if (e.key === 'Enter') $('send').click(); });
   $('print').addEventListener('click', () => window.print());
+  $('xls').addEventListener('click', () => { if (S.comp.length) exportXls(); });
   addMsg('bot', { text: 'Unggah file komplain di panel kiri. Setelah itu saya ringkas isinya di sini.' });
 })();
 </script>
